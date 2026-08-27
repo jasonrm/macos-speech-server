@@ -81,6 +81,7 @@ final class FluidSTTService: STTService, @unchecked Sendable {
         }
 
         var segmentResults: [SegmentResult] = []
+        let decoderLayerCount = await asrManager.decoderLayerCount
 
         for vadSeg in vadSegments {
             let startSample = vadSeg.startSample(sampleRate: 16000)
@@ -93,7 +94,10 @@ final class FluidSTTService: STTService, @unchecked Sendable {
             let paddedLength = max(segLength, 16_000)
             var slicedSamples = [Float](repeating: 0, count: paddedLength)
             try diskSource.copySamples(into: &slicedSamples, offset: startSample, count: segLength)
-            let result = try await asrManager.transcribe(slicedSamples, source: .system)
+            // FluidAudio 0.15+ makes decoder state caller-owned. Each VAD
+            // segment is an independent utterance, so begin with fresh state.
+            var decoderState = TdtDecoderState.make(decoderLayers: decoderLayerCount)
+            let result = try await asrManager.transcribe(slicedSamples, decoderState: &decoderState)
 
             let segOffset = vadSeg.startTime
             let rawWords = mergeTokensIntoWords(result.tokenTimings ?? [])

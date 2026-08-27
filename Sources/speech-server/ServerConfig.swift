@@ -115,6 +115,7 @@ struct HTTPConfig: Codable, Sendable {
 struct STTConfig: Codable, Sendable {
     var engine: STTEngine
     var parakeet: ParakeetSettings?
+    /// Retained only to decode legacy configs and report an actionable startup error.
     var qwen3: Qwen3STTSettings?
 
     init() {
@@ -159,6 +160,7 @@ struct ParakeetSettings: Codable, Sendable {
     }
 }
 
+/// Legacy settings retained for config migration diagnostics. FluidAudio 0.15.3 removed Qwen3 ASR.
 struct Qwen3STTSettings: Codable, Sendable {
     /// Model variant. "int8" = quantized (~900 MB, default), "f32" = full precision (~1.75 GB).
     var variant: String

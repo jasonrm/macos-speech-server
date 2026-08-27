@@ -27,16 +27,6 @@ struct STTInfo: Sendable {
         modelDescription: "Parakeet TDT 0.6B on-device ASR via FluidAudio",
         languages: ["en"]
     )
-
-    static let qwen3 = STTInfo(
-        modelName: "qwen3-asr",
-        modelDescription: "Qwen3 ASR on-device speech recognition via FluidAudio",
-        languages: [
-            "zh", "en", "yue", "ar", "de", "fr", "es", "pt", "id", "it",
-            "ko", "ru", "th", "vi", "ja", "tr", "hi", "ms", "nl", "sv",
-            "da", "fi", "pl", "cs", "fil", "fa", "el", "hu", "mk", "ro",
-        ]
-    )
 }
 
 actor WyomingSession {
